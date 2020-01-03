@@ -7,10 +7,7 @@ module JekyllRefer
     if page_or_doc.is_a?(Jekyll::Page)
       return CopiedPage.new(page_or_doc, layout)
     elsif page_or_doc.is_a?(Jekyll::Document)
-      copied_doc = CopiedDocument.new(page_or_doc, layout)
-      # copied_doc.read  # initialize 内でやることにした
-      copied_doc.collection.docs << copied_doc
-      return copied_doc
+      return PageFromDocument.new(page_or_doc, layout)
     else
       raise "invalid arg: #{page_or_doc.class}"
     end
@@ -42,20 +39,39 @@ module JekyllRefer
     end
   end
 
-  class CopiedDocument < Jekyll::Document
+  class PageFromDocument < Jekyll::Page
+    # Jekyll::Document を継承してつくっても上手くいかなかった．
+    # より正確に言うと，include そのものは上手くいったが，
+    # その副作用として include 元の document がおかしくなった．
+    # Document の @path を(symlink を使うなどして)別の場所に退避すれば
+    # 一応動作したけど…
     def initialize(doc, layout)
       if not doc.is_a?(Jekyll::Document)
         raise "invalid arg: #{page.class}"
       end
-      super(doc.path, {site: doc.site, collection: doc.collection})
-      self.read  # @data["layout"] = layout よりも前にやる必要がある
-      @data = @data.clone
-      @data["layout"] = layout
+      @site = doc.site
+      @base = @site.source
+      @path = doc.path
+      pathname = Pathname(@path)
+      @dir = pathname.dirname.to_s
+      @name = pathname.basename.to_s
+
+      process(@name)
+      # read_yaml(PathManager.join(@base, @dir), @name)
+      self.content = doc.content
+      self.data = doc.data.clone
+      self.data["layout"] = layout
+
+      data.default_proc = proc do |_, key|
+        @site.frontmatter_defaults.find(relative_path, type, key)
+      end
+
+      Jekyll::Hooks.trigger :pages, :post_init, self
     end
   end
 
   def render_page(page)
-    if not (page.is_a?(::Jekyll::Page) or page.is_a?(::Jekyll::Document))
+    if not page.is_a?(::Jekyll::Page)
       raise "invalid arg: #{page.class}"
     end
     site = page.site
