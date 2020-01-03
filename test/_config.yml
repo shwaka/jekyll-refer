@@ -1,6 +1,7 @@
 livereload: true
 plugins:
   - jekyll-typescript
+  - jekyll-refer
 refer:
   key: ref
   default_to_page:
