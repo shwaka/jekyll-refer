@@ -1,0 +1,5 @@
+source 'https://rubygems.org'
+
+gem 'jekyll', "4.0.0"
+gem 'jekyll-typescript', git: 'git@github.com:shwaka/jekyll-typescript.git'
+gem 'jekyll-refer', path: '..'

@@ -1,0 +1,37 @@
+---
+---
+
+$background-base: hsl(100, 30%, 90%);
+body {
+  left: 0;
+  right: 0;
+  margin: auto;
+  max-width: 1000px;
+  background-color: $background-base;
+}
+
+h1 {
+  color: #11d;
+}
+
+h2 {
+  color: #161;
+}
+
+header {
+  border-bottom: 10px solid #a33;
+}
+
+footer {
+  background-color: #a33;
+  color: #fff;
+}
+
+.warning {
+  background-color: #f00;
+  color: #fff;
+}
+
+.include {
+  border: 1px solid blue;
+}
