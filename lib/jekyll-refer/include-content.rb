@@ -44,6 +44,9 @@ module JekyllRefer
 
   class CopiedDocument < Jekyll::Document
     def initialize(doc, layout)
+      if not doc.is_a?(Jekyll::Document)
+        raise "invalid arg: #{page.class}"
+      end
       super(doc.path, {site: doc.site, collection: doc.collection})
       self.read  # @data["layout"] = layout よりも前にやる必要がある
       @data = @data.clone
