@@ -58,8 +58,6 @@ module JekyllRefer
     site = page.site
     payload = site.site_payload
     output = Jekyll::Renderer.new(site, page, payload).run
-    puts "---- #{page.path}"
-    puts output
     return output
   end
 
