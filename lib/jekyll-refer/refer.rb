@@ -58,7 +58,7 @@ module Jekyll
       # Jekyll::Filters::URLFilters.absolute_url ってそのまま呼び出せるの？extend?
       # url = absolute_url(refer_url(page))
       site = @context.registers[:site]
-      baseurl = site.config["baseurl"]
+      baseurl = site.config["baseurl"] || ""
       url = baseurl + refer_url(page)
       if text
         link_text = text

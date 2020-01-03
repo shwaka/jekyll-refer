@@ -5,7 +5,7 @@ title: ほげ
 ---
 
 ## Hoge
-This is hoge
+This is hoge (ref: {{ page.ref }})
 
 - this
 - is a
