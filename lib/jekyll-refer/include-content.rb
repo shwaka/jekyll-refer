@@ -1,3 +1,5 @@
+require 'jekyll-refer/util'
+
 class CopiedPage < Jekyll::Page
   def initialize(page, layout)
     if not page.is_a?(Jekyll::Page)
@@ -25,27 +27,31 @@ end
 
 module Jekyll
   module IncludeContentFilter
-    def include_content(page_hash, layout=nil)
+    def include_content(page_hash, layout=:default)
       page = get_page(page_hash)
-      copied_page = CopiedPage.new(page, layout)
+      if layout == :default
+        site = @context.registers[:site]
+        util = ::JekyllRefer::Util.new(site)
+        layout_name = util.config["include_layout"]
+      elsif layout.is_a?(String) or layout.nil?
+        layout_name = layout
+      else
+        raise "invalid layout"
+      end
+      copied_page = CopiedPage.new(page, layout_name)
       output = render_page(copied_page)
       return output
     end
 
     private
-    def all_pages
-      site = @context.registers[:site]
-      pages = site.collection_names.inject(site.pages){|_pages,col_name|
-        _pages = _pages + site.collections[col_name].docs
-      }
-      return pages
-    end
     def get_page(page_hash)
       if page_hash.is_a?(Jekyll::Page)
         return page_hash
       elsif page_hash.is_a?(Hash)
         path = page_hash["path"]
-        page = all_pages.find do |_page|
+        site = @context.registers[:site]
+        util = ::JekyllRefer::Util.new(site)
+        page = util.all_pages.find do |_page|
           _page.path == path
         end
         return page

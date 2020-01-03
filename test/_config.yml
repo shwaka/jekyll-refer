@@ -6,6 +6,7 @@ refer:
   key: ref
   default_to_page:
     - lang
+  include_layout: include_layout
 baseurl: ""
 typescript:
   build_dir: .tsbuild

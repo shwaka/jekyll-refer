@@ -1,10 +1,13 @@
 # coding: utf-8
+require 'jekyll-refer/util'
+
 module Jekyll
   module ReferFilters
     def refer(input, noerror=false, *args)
       # ページが見つからないときは nil を返す
       site = @context.registers[:site]
-      config_refer = site.config["refer"]
+      util = ::JekyllRefer::Util.new(site)
+      config_refer = util.config
       refer_key = config_refer["key"]
       options = alist_to_hash(args)
       current_page = @context.registers[:page]
@@ -16,9 +19,7 @@ module Jekyll
           end
         end
       end
-      pages = site.collection_names.inject(site.pages){|_pages,col_name|
-        _pages = _pages + site.collections[col_name].docs
-      }
+      pages = util.all_pages
       # if default_ref then
       #   page = find_page(pages, refer_key, input, options) ||
       #          find_page(pages, refer_key, default_ref, options)

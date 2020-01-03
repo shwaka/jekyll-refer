@@ -17,8 +17,8 @@ layout: mylayout
 
 # include_content hoge
 
-{{ "hoge" | refer | include_content: "include_layout" }}
+{{ "hoge" | refer | include_content }}
 
 # include_content tspage
 
-{{ "tspage" | refer | include_content: "include_layout" }}
+{{ "tspage" | refer | include_content }}
